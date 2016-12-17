@@ -87,16 +87,16 @@ switch( nSpeed )
 
 int open_port(int fd,int comport)
 {
-  char *dev[]={"/dev/ttyS0","/dev/ttyS1","/dev/ttyS2"};
+  char *dev[]={"/dev/ttyUSB0","/dev/ttyS1","/dev/ttyS2"};
   long vdisable;
   if (comport==1)
-  { fd = open( "/dev/ttyS0", O_RDWR|O_NOCTTY|O_NDELAY);
+  { fd = open( "/dev/ttyUSB0", O_RDWR|O_NOCTTY|O_NDELAY);
     if (-1 == fd){
       perror("Can't Open Serial Port");
       return(-1);
     }
     else 
-      printf("open ttyS0 .....\n");
+      printf("open ttyUSB).....\n");
   }
   else if(comport==2)
   { fd = open( "/dev/ttyS1", O_RDWR|O_NOCTTY|O_NDELAY);
@@ -128,11 +128,12 @@ int open_port(int fd,int comport)
   printf("fd-open=%d\n",fd);
   return fd;
 }
-int main(void)
+int main(int num)
 {
   int fd;
   int nread,i;
-  char buff[512];
+  char buff[512],*pbuff;
+	pbuff=buff;
   if((fd=open_port(fd,1))<0){
     perror("open_port error");
     return;
@@ -147,10 +148,12 @@ int main(void)
     while((nread=read(fd,buff,512))>0)
     {
         printf("nread=%d,%s\n",nread,buff);
-        buff[nread+1]='\0'
+        buff[nread+1]='\0';
         printf("\n%s",buff);
+	write(fd,buff,1);
     }
   }
+
   close(fd);
   return;
 }
